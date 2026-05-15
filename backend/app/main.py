@@ -11,12 +11,20 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup: seed database
+    # startup: create tables and seed database
     try:
+        from app.db.session import engine
+        from app.db.base import Base
+        import app.models  # noqa: F401 — ensure all models are registered
+
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables created/verified.")
+
         from app.db.seed import seed_database
         await seed_database()
     except Exception as e:
-        logger.warning(f"Database seeding skipped: {e}")
+        logger.warning(f"Database setup skipped: {e}")
     yield
     # shutdown
 
