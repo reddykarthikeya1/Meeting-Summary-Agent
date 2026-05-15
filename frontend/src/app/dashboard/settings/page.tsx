@@ -69,7 +69,7 @@ export default function SettingsPage() {
     return configs;
   });
 
-  const updateProviderConfig = (id: string, field: keyof ProviderConfig, value: string | boolean) => {
+  const updateProviderConfig = (id: string, field: keyof ProviderConfig, value: string | boolean | null) => {
     setProviderConfigs((prev) => ({
       ...prev,
       [id]: { ...prev[id], [field]: value },
