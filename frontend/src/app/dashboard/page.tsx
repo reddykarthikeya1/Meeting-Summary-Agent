@@ -184,7 +184,7 @@ export default function DashboardPage() {
                 {recentMeetings.map((meeting) => {
                   const type = MEETING_TYPES.find((t) => t.value === meeting.meeting_type);
                   return (
-                    <Link key={meeting.id} href={`/meetings/${meeting.id}`}>
+                    <Link key={meeting.id} href={`/dashboard/meetings/${meeting.id}`}>
                       <div className="group flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-accent">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                           <Video className="h-5 w-5 text-primary" />

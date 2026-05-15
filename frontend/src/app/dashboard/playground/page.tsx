@@ -367,23 +367,39 @@ export default function PlaygroundPage() {
               </CardContent>
             </Card>
             <div className="grid gap-4 sm:grid-cols-3">
-              {[
-                { action: "summarize" as TaskType, label: "Summarize", icon: FileText, color: "blue", desc: "Generate a brief summary" },
-                { action: "extract_actions" as TaskType, label: "Extract Actions", icon: ListChecks, color: "emerald", desc: "Find all action items" },
-                { action: "analyze_topics" as TaskType, label: "Analyze Topics", icon: Sparkles, color: "violet", desc: "Identify key topics" },
-              ].map((item) => (
-                <motion.div key={item.action} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                  <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleQuickAction(item.action)}>
-                    <CardContent className="pt-6 text-center">
-                      <div className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-${item.color}-500/10`}>
-                        <item.icon className={`h-6 w-6 text-${item.color}-500`} />
-                      </div>
-                      <h3 className="font-medium">{item.label}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleQuickAction("summarize")}>
+                  <CardContent className="pt-6 text-center">
+                    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
+                      <FileText className="h-6 w-6 text-blue-500" />
+                    </div>
+                    <h3 className="font-medium">Summarize</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Generate a brief summary</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleQuickAction("extract_actions")}>
+                  <CardContent className="pt-6 text-center">
+                    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
+                      <ListChecks className="h-6 w-6 text-emerald-500" />
+                    </div>
+                    <h3 className="font-medium">Extract Actions</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Find all action items</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                <Card className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleQuickAction("analyze_topics")}>
+                  <CardContent className="pt-6 text-center">
+                    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10">
+                      <Sparkles className="h-6 w-6 text-violet-500" />
+                    </div>
+                    <h3 className="font-medium">Analyze Topics</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Identify key topics</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
             {loading && (
               <div className="flex items-center justify-center gap-3 py-8">

@@ -233,7 +233,7 @@ export default function SearchPage() {
 
           return (
             <StaggerItem key={result.id}>
-              <Link href={result.meetingId ? `/meetings/${result.meetingId}` : "#"}>
+              <Link href={result.meetingId ? `/dashboard/meetings/${result.meetingId}` : "#"}>
                 <Card className="group cursor-pointer transition-all hover:shadow-md hover:border-primary/30">
                   <CardContent className="flex items-start gap-3 p-4">
                     <div className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${color}`}>
