@@ -82,7 +82,7 @@ export default function MeetingDetailPage() {
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <h2 className="text-2xl font-bold">Meeting not found</h2>
         <p className="mt-2 text-muted-foreground">The meeting you are looking for does not exist.</p>
-        <Link href="/meetings">
+        <Link href="/dashboard/meetings">
           <Button className="mt-4">Back to Meetings</Button>
         </Link>
       </div>
@@ -107,7 +107,7 @@ export default function MeetingDetailPage() {
       <div className="space-y-6">
         {/* Back + Header */}
         <div className="flex items-start gap-4">
-          <Link href="/meetings">
+          <Link href="/dashboard/meetings">
             <Button variant="ghost" size="icon" className="mt-1">
               <ArrowLeft className="h-5 w-5" />
             </Button>

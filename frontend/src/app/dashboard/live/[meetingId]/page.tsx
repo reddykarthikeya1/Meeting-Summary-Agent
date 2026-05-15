@@ -66,7 +66,7 @@ export default function LiveMeetingPage() {
 
   const handleStop = () => {
     setIsRecording(false);
-    router.push(`/meetings/${params.meetingId}`);
+    router.push(`/dashboard/meetings/${params.meetingId}`);
   };
 
   return (

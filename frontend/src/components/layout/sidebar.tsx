@@ -30,18 +30,18 @@ import { currentUser } from "@/lib/mock-data";
 import { getInitials } from "@/lib/utils";
 
 const navItems = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
-  { label: "Meetings", href: "/meetings", icon: Calendar },
-  { label: "New Meeting", href: "/meetings/new", icon: Plus, accent: true },
-  { label: "Action Items", href: "/action-items", icon: CheckSquare },
-  { label: "Search", href: "/search", icon: Search },
-  { label: "Templates", href: "/templates", icon: Layout },
-  { label: "Analytics", href: "/analytics", icon: BarChart3 },
-  { label: "Playground", href: "/playground", icon: Wand2 },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Meetings", href: "/dashboard/meetings", icon: Calendar },
+  { label: "New Meeting", href: "/dashboard/meetings/new", icon: Plus, accent: true },
+  { label: "Action Items", href: "/dashboard/action-items", icon: CheckSquare },
+  { label: "Search", href: "/dashboard/search", icon: Search },
+  { label: "Templates", href: "/dashboard/templates", icon: Layout },
+  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { label: "Playground", href: "/dashboard/playground", icon: Wand2 },
 ];
 
 const bottomItems = [
-  { label: "Settings", href: "/settings", icon: Settings2 },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings2 },
 ];
 
 function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {

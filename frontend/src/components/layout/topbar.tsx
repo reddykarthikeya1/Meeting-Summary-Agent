@@ -10,21 +10,22 @@ import { UserMenu } from "./user-menu";
 import { useUIStore } from "@/store/ui-store";
 
 const breadcrumbMap: Record<string, string> = {
-  "/": "Dashboard",
-  "/meetings": "Meetings",
-  "/meetings/new": "New Meeting",
-  "/action-items": "Action Items",
-  "/search": "Search",
-  "/templates": "Templates",
-  "/analytics": "Analytics",
-  "/settings": "Settings",
+  "/dashboard": "Dashboard",
+  "/dashboard/meetings": "Meetings",
+  "/dashboard/meetings/new": "New Meeting",
+  "/dashboard/action-items": "Action Items",
+  "/dashboard/search": "Search",
+  "/dashboard/templates": "Templates",
+  "/dashboard/analytics": "Analytics",
+  "/dashboard/settings": "Settings",
+  "/dashboard/playground": "Playground",
 };
 
 function getBreadcrumbs(pathname: string) {
-  if (pathname === "/") return [{ label: "Dashboard", href: "/" }];
+  if (pathname === "/dashboard") return [{ label: "Dashboard", href: "/dashboard" }];
 
   const segments = pathname.split("/").filter(Boolean);
-  const crumbs = [{ label: "Dashboard", href: "/" }];
+  const crumbs = [{ label: "Dashboard", href: "/dashboard" }];
 
   let path = "";
   for (const segment of segments) {

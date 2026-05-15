@@ -98,7 +98,7 @@ export default function NewMeetingPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start gap-4">
-          <Link href="/meetings">
+          <Link href="/dashboard/meetings">
             <Button variant="ghost" size="icon" className="mt-1">
               <ArrowLeft className="h-5 w-5" />
             </Button>

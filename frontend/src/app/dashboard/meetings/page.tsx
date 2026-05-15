@@ -59,7 +59,7 @@ export default function MeetingsPage() {
             Manage and review all your recorded meetings.
           </p>
         </div>
-        <Link href="/meetings/new">
+        <Link href="/dashboard/meetings/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             New Meeting
@@ -136,7 +136,7 @@ export default function MeetingsPage() {
             const type = MEETING_TYPES.find((t) => t.value === meeting.meeting_type);
             return (
               <StaggerItem key={meeting.id}>
-                <Link href={`/meetings/${meeting.id}`}>
+                <Link href={`/dashboard/meetings/${meeting.id}`}>
                   <motion.div
                     whileHover={{ y: -4, scale: 1.01 }}
                     transition={{ duration: 0.2 }}
@@ -213,7 +213,7 @@ export default function MeetingsPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
               >
-                <Link href={`/meetings/${meeting.id}`}>
+                <Link href={`/dashboard/meetings/${meeting.id}`}>
                   <Card className="group cursor-pointer transition-shadow hover:shadow-md hover:border-primary/30">
                     <div className="flex items-center gap-4 p-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
