@@ -50,18 +50,23 @@ async def chat(
 
         provider = AIProviderFactory.create(req.provider, **kwargs)
 
-        # Build messages array for the provider
-        messages_text = ""
-        for msg in req.messages:
-            role_label = "User" if msg.role == "user" else "Assistant"
-            messages_text += f"{role_label}: {msg.content}\n\n"
-
-        # Get the last user message as the prompt
-        last_user_msg = req.messages[-1].content
+        # Build conversation history as context for multi-turn
+        if len(req.messages) > 1:
+            # Format previous messages as context
+            history_lines = []
+            for msg in req.messages[:-1]:
+                role_label = "User" if msg.role == "user" else "Assistant"
+                history_lines.append(f"{role_label}: {msg.content}")
+            history_text = "\n\n".join(history_lines)
+            last_msg = req.messages[-1].content
+            # Combine history with last message
+            full_prompt = f"Previous conversation:\n{history_text}\n\nUser: {last_msg}\n\nAssistant:"
+        else:
+            full_prompt = req.messages[-1].content
 
         # Use the provider to generate a response
         response = await provider.generate_text(
-            prompt=last_user_msg,
+            prompt=full_prompt,
             system_prompt=req.system_prompt or "You are a helpful AI assistant.",
             max_tokens=req.max_tokens,
             temperature=req.temperature,

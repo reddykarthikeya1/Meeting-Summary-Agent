@@ -113,6 +113,11 @@ def _register():
             "model": "deepseek-chat",
             "provider_name": "deepseek",
         },
+        "custom": {
+            "base_url": "https://api.openai.com/v1",
+            "model": "gpt-4o",
+            "provider_name": "custom",
+        },
     }
 
     for name, defaults in providers.items():
