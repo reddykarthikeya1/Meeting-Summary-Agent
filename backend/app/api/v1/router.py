@@ -13,6 +13,7 @@ from app.api.v1.ws import router as ws_router
 from app.api.v1.teams import router as teams_router
 from app.api.v1.providers import router as providers_router
 from app.api.v1.setup import router as setup_router
+from app.api.v1.playground import router as playground_router
 
 api_router = APIRouter()
 
@@ -30,3 +31,4 @@ api_router.include_router(ws_router, tags=["WebSocket"])
 api_router.include_router(teams_router, prefix="/teams", tags=["Teams Integration"])
 api_router.include_router(providers_router, prefix="/providers", tags=["AI Providers"])
 api_router.include_router(setup_router, prefix="/setup", tags=["Setup"])
+api_router.include_router(playground_router, prefix="/meetings", tags=["Playground"])

@@ -13,6 +13,7 @@ import {
   Layout,
   BarChart3,
   Settings2,
+  Wand2,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -36,6 +37,7 @@ const navItems = [
   { label: "Search", href: "/search", icon: Search },
   { label: "Templates", href: "/templates", icon: Layout },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
+  { label: "Playground", href: "/playground", icon: Wand2 },
 ];
 
 const bottomItems = [
