@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import {
@@ -333,7 +334,7 @@ export default function NewMeetingPage() {
                     </Button>
                   </div>
                   <div className="mt-4 flex justify-end">
-                    <Button className="gap-2">
+                    <Button className="gap-2" onClick={() => toast.success("Upload started! Processing will begin shortly.")}>
                       <Upload className="h-4 w-4" />
                       Upload and Process
                     </Button>

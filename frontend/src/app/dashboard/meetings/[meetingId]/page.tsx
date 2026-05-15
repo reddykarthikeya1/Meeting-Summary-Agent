@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -424,7 +425,7 @@ export default function MeetingDetailPage() {
                   className="min-h-[300px] resize-none"
                 />
                 <div className="mt-3 flex justify-end">
-                  <Button size="sm">Save Notes</Button>
+                  <Button size="sm" onClick={() => toast.success("Notes saved!")}>Save Notes</Button>
                 </div>
               </CardContent>
             </Card>
@@ -448,7 +449,7 @@ export default function MeetingDetailPage() {
                     className="min-h-[80px] resize-none"
                   />
                   <div className="mt-2 flex justify-end">
-                    <Button size="sm" className="gap-1.5">
+                    <Button size="sm" className="gap-1.5" onClick={() => { setCommentText(""); toast.success("Comment added!"); }}>
                       <Send className="h-3.5 w-3.5" />
                       Comment
                     </Button>

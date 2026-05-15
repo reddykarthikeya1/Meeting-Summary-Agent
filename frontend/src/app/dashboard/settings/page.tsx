@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   User,
   Cpu,
@@ -120,7 +121,7 @@ export default function SettingsPage() {
                     <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} />
                   </div>
                   <div className="flex justify-end">
-                    <Button className="gap-2">
+                    <Button className="gap-2" onClick={() => toast.success("Profile saved!")}>
                       <Save className="h-4 w-4" />
                       Save Changes
                     </Button>

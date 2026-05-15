@@ -173,7 +173,7 @@ export default function DashboardPage() {
           <Card className="h-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-base">Recent Meetings</CardTitle>
-              <Link href="/meetings">
+              <Link href="/dashboard/meetings">
                 <Button variant="ghost" size="sm" className="gap-1 text-xs">
                   View all <ArrowRight className="h-3 w-3" />
                 </Button>
@@ -245,7 +245,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Upcoming Action Items</CardTitle>
-            <Link href="/action-items">
+            <Link href="/dashboard/action-items">
               <Button variant="ghost" size="sm" className="gap-1 text-xs">
                 View all <ArrowRight className="h-3 w-3" />
               </Button>

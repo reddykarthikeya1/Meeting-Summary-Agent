@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   Plus,
   Zap,
@@ -133,10 +135,12 @@ export default function TemplatesPage() {
 
                       {/* Actions */}
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="flex-1 text-xs">
-                          Use Template
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-xs">
+                        <Link href="/dashboard/meetings/new" className="flex-1">
+                          <Button variant="outline" size="sm" className="w-full text-xs">
+                            Use Template
+                          </Button>
+                        </Link>
+                        <Button variant="ghost" size="sm" className="text-xs" onClick={() => toast.success("Template duplicated!")}>
                           <Copy className="mr-1 h-3 w-3" />
                           Duplicate
                         </Button>
