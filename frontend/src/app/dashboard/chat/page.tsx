@@ -66,7 +66,7 @@ export default function ChatPage() {
   useEffect(() => {
     const currentProvider = AI_PROVIDERS.find((p) => p.id === provider);
     if (currentProvider && currentProvider.models.length > 0 && !model) {
-      setModel(currentProvider.models[0]);
+      setModel(String(currentProvider.models[0]));
     }
   }, [provider]);
 
@@ -284,7 +284,7 @@ export default function ChatPage() {
                 <SelectTrigger className="w-[180px] h-8 text-xs"><SelectValue placeholder="Model" /></SelectTrigger>
                 <SelectContent>
                   {currentProviderModels.map((m) => (
-                    <SelectItem key={m} value={m}>{m}</SelectItem>
+                    <SelectItem key={m} value={String(m)}>{String(m)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
