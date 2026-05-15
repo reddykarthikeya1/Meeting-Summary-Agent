@@ -1,15 +1,15 @@
 from typing import AsyncIterator
-from mistralai.async_client import MistralAsyncClient
+from openai import AsyncOpenAI
 from app.ai.base import AIProvider
 from app.ai.factory import AIProviderFactory
 
 
 class MistralProvider(AIProvider):
-    """Mistral AI provider using the mistralai SDK."""
+    """Mistral AI provider using OpenAI-compatible API."""
 
     def __init__(self, api_key: str, **kwargs):
         self.api_key = api_key
-        self.client = MistralAsyncClient(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key, base_url="https://api.mistral.ai/v1")
         self.default_model = kwargs.get("model", "mistral-large-latest")
 
     async def generate_text(
@@ -24,7 +24,7 @@ class MistralProvider(AIProvider):
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
-        response = await self.client.chat(
+        response = await self.client.chat.completions.create(
             model=self.default_model,
             messages=messages,
             max_tokens=max_tokens,
@@ -44,22 +44,21 @@ class MistralProvider(AIProvider):
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
-        stream = self.client.chat_stream(
+        stream = await self.client.chat.completions.create(
             model=self.default_model,
             messages=messages,
             max_tokens=max_tokens,
             temperature=temperature,
+            stream=True,
         )
         async for chunk in stream:
-            if chunk.data and chunk.data.choices:
-                delta = chunk.data.choices[0].delta
-                if delta and delta.content:
-                    yield delta.content
+            if chunk.choices and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
 
     async def get_embedding(self, text: str) -> list[float]:
-        response = await self.client.embeddings(
+        response = await self.client.embeddings.create(
             model="mistral-embed",
-            input=[text],
+            input=text,
         )
         return response.data[0].embedding
 
@@ -70,5 +69,4 @@ class MistralProvider(AIProvider):
         return ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest"]
 
 
-# Auto-register the provider
 AIProviderFactory.register("mistral", MistralProvider)
