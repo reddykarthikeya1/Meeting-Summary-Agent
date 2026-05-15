@@ -12,7 +12,7 @@ from app.ai.agents.summarizer import SummarizerAgent
 from app.ai.agents.action_extractor import ActionExtractorAgent
 from app.ai.agents.topic_analyzer import TopicAnalyzerAgent
 
-router = APIRouter(prefix="/playground", tags=["Playground"])
+router = APIRouter(tags=["Playground"])
 
 
 class SummarizeRequest(BaseModel):

@@ -8,7 +8,7 @@ from app.config import settings
 from app.teams.connector import GraphAPIConnector
 from app.teams.bot import TeamsBotHandler
 
-router = APIRouter(prefix="/teams", tags=["teams"])
+router = APIRouter(tags=["teams"])
 
 # Initialize connector (in production, use env vars)
 graph_connector = None

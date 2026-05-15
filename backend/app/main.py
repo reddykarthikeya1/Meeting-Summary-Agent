@@ -16,6 +16,7 @@ async def lifespan(app: FastAPI):
         from app.db.session import engine
         from app.db.base import Base
         import app.models  # noqa: F401 — ensure all models are registered
+        import app.ai  # noqa: F401 — ensure all AI providers are registered
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all, checkfirst=True)

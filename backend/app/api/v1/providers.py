@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.ai.factory import AIProviderFactory
 from app.config import settings
 
-router = APIRouter(prefix="/providers", tags=["providers"])
+router = APIRouter(tags=["providers"])
 
 
 # ── Available provider metadata ────────────────────────────────

@@ -8,7 +8,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/setup", tags=["Setup"])
+router = APIRouter(tags=["Setup"])
 
 CONFIG_FILE = Path(__file__).parent.parent.parent.parent / "config.json"
 
