@@ -26,8 +26,15 @@ export const STATUS_COLORS = {
 } as const;
 
 export const AI_PROVIDERS = [
-  { id: "openai", name: "OpenAI", models: ["gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo"] },
-  { id: "anthropic", name: "Anthropic", models: ["claude-sonnet-4-20250514", "claude-3-haiku-20240307"] },
-  { id: "gemini", name: "Google Gemini", models: ["gemini-pro", "gemini-pro-vision"] },
-  { id: "mistral", name: "Mistral", models: ["mistral-large-latest", "mistral-medium"] },
+  { id: "openai", name: "OpenAI", models: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"], requiresKey: true, keyUrl: "https://platform.openai.com/api-keys" },
+  { id: "anthropic", name: "Anthropic", models: ["claude-sonnet-4-20250514", "claude-3-haiku-20240307"], requiresKey: true, keyUrl: "https://console.anthropic.com/" },
+  { id: "gemini", name: "Google Gemini", models: ["gemini-pro", "gemini-pro-vision", "gemini-1.5-flash"], requiresKey: true, keyUrl: "https://aistudio.google.com/app/apikey" },
+  { id: "groq", name: "Groq", models: ["llama-3.3-70b-versatile", "mixtral-8x7b-32768", "gemma2-9b-it"], requiresKey: true, keyUrl: "https://console.groq.com/keys" },
+  { id: "openrouter", name: "OpenRouter", models: ["anthropic/claude-sonnet-4-20250514", "meta-llama/llama-3.1-70b-instruct"], requiresKey: true, keyUrl: "https://openrouter.ai/keys" },
+  { id: "mistral", name: "Mistral", models: ["mistral-large-latest", "mistral-medium", "mistral-small-latest"], requiresKey: true, keyUrl: "https://console.mistral.ai/" },
+  { id: "together", name: "Together AI", models: ["meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"], requiresKey: true, keyUrl: "https://api.together.xyz/settings/api-keys" },
+  { id: "fireworks", name: "Fireworks AI", models: ["accounts/fireworks/models/llama-v3p1-70b-instruct"], requiresKey: true, keyUrl: "https://fireworks.ai/account/api-keys" },
+  { id: "deepseek", name: "DeepSeek", models: ["deepseek-chat", "deepseek-coder"], requiresKey: true, keyUrl: "https://platform.deepseek.com/api_keys" },
+  { id: "qwen", name: "Qwen (Self-Hosted)", models: ["qwen3-30b-a3b", "qwen3-235b-a22b", "qwen3-32b", "qwen3-14b", "qwen3-8b"], requiresKey: false },
+  { id: "custom", name: "Custom (OpenAI-Compatible)", models: [], requiresKey: false },
 ] as const;

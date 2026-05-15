@@ -11,6 +11,7 @@ from app.api.v1.analytics import router as analytics_router
 from app.api.v1.export import router as export_router
 from app.api.v1.ws import router as ws_router
 from app.api.v1.teams import router as teams_router
+from app.api.v1.providers import router as providers_router
 
 api_router = APIRouter()
 
@@ -26,3 +27,4 @@ api_router.include_router(analytics_router, prefix="/analytics", tags=["Analytic
 api_router.include_router(export_router, prefix="/meetings", tags=["Export"])
 api_router.include_router(ws_router, tags=["WebSocket"])
 api_router.include_router(teams_router, prefix="/teams", tags=["Teams Integration"])
+api_router.include_router(providers_router, prefix="/providers", tags=["AI Providers"])

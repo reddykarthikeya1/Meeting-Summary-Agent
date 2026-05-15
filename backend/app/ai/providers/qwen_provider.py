@@ -1,18 +1,21 @@
+"""
+Qwen provider using OpenAI-compatible API.
+Works with self-hosted Qwen models served via vLLM, Ollama, SGLang, etc.
+"""
 from typing import AsyncIterator
 from openai import AsyncOpenAI
 from app.ai.base import AIProvider
 from app.ai.factory import AIProviderFactory
 
 
-class OpenAIProvider(AIProvider):
-    """OpenAI AI provider using the official SDK."""
+class QwenProvider(AIProvider):
+    """Qwen AI provider using OpenAI-compatible API."""
 
-    def __init__(self, api_key: str, **kwargs):
+    def __init__(self, api_key: str = "not-needed", **kwargs):
         self.api_key = api_key
-        base_url = kwargs.get("base_url")
-        self.client = AsyncOpenAI(api_key=api_key, base_url=base_url)
-        self.default_model = kwargs.get("model", "gpt-4o")
-        self.embedding_model = kwargs.get("embedding_model", "text-embedding-3-small")
+        self.base_url = kwargs.get("base_url", "http://localhost:11434/v1")
+        self.client = AsyncOpenAI(api_key=api_key, base_url=self.base_url)
+        self.default_model = kwargs.get("model", "qwen3-30b-a3b")
 
     async def generate_text(
         self,
@@ -59,17 +62,25 @@ class OpenAIProvider(AIProvider):
 
     async def get_embedding(self, text: str) -> list[float]:
         response = await self.client.embeddings.create(
-            model=self.embedding_model,
+            model="text-embedding-v3",
             input=text,
         )
         return response.data[0].embedding
 
     def get_name(self) -> str:
-        return "openai"
+        return "qwen"
 
     def get_models(self) -> list[str]:
-        return ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"]
+        return [
+            "qwen3-30b-a3b",
+            "qwen3-235b-a22b",
+            "qwen3-32b",
+            "qwen3-14b",
+            "qwen3-8b",
+            "qwen2.5-72b-instruct",
+            "qwen2.5-32b-instruct",
+        ]
 
 
 # Auto-register the provider
-AIProviderFactory.register("openai", OpenAIProvider)
+AIProviderFactory.register("qwen", QwenProvider)
