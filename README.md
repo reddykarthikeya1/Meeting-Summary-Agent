@@ -1,6 +1,6 @@
 # MeetAI — AI Meeting & Notes Assistant
 
-Record, transcribe, summarize, and extract action items from your meetings using AI. Supports multiple AI providers and integrates with Microsoft Teams.
+Record, transcribe, summarize, and extract action items from your meetings using AI. Supports 11 AI providers and integrates with Microsoft Teams.
 
 ---
 
@@ -17,7 +17,21 @@ Record, transcribe, summarize, and extract action items from your meetings using
 - **Meeting Summaries** — Generate brief, detailed, executive, or bullet-point summaries
 - **Action Item Extraction** — AI automatically identifies tasks, assigns owners, and detects priorities
 - **Topic Analysis** — Extract key topics and themes discussed in meetings
-- **Multi-Provider Support** — Choose from OpenAI (GPT-4o), Anthropic (Claude), Google Gemini, or Mistral for each meeting
+- **Smart Chunking** — Long transcripts are automatically split for models with small context windows
+- **Multi-Provider Support** — Choose from 11 AI providers for each meeting
+
+### Multi-Provider AI Chat
+- **Chat Interface** — Full-featured chat with any configured AI provider
+- **Provider Switching** — Switch between providers and models mid-conversation
+- **Session Management** — Create, switch, and delete chat sessions
+- **System Prompts** — Preset prompts for Meeting Analyst, Code Assistant, Writing Assistant, Data Analyst
+- **Conversation Context** — Paste meeting transcripts as context for informed responses
+
+### AI Playground
+- **Text Analysis** — Paste transcripts and run summarization, action extraction, or topic analysis
+- **Live Recording** — Record meetings with real-time waveform and auto-summary on stop
+- **Conversation Mode** — Chat with AI about a meeting transcript
+- **Quick Actions** — One-click summarize, extract actions, or analyze topics
 
 ### Collaboration
 - **Comments & Threads** — Add timestamped comments on any part of the transcript
@@ -36,6 +50,29 @@ Record, transcribe, summarize, and extract action items from your meetings using
 - **Analytics Dashboard** — Meeting frequency, speaker statistics, topic trends, action item completion rates
 - **Kanban Board** — Manage action items in a drag-and-drop Kanban view
 
+### Setup & Configuration
+- **Setup Wizard** — 3-step wizard for database, AI providers, and admin account on first launch
+- **Provider Configuration** — Add API keys, test connections, set defaults for all 11 providers
+- **Self-Hosted Support** — Configure local models (Qwen via vLLM/Ollama) with custom base URLs
+
+---
+
+## Supported AI Providers
+
+| Provider | Type | Models |
+|----------|------|--------|
+| OpenAI | Cloud | GPT-4o, GPT-4o-mini, GPT-4-turbo |
+| Anthropic | Cloud | Claude Sonnet 4, Claude 3 Haiku |
+| Google Gemini | Cloud | Gemini Pro, Gemini 1.5 Flash |
+| Groq | Cloud | Llama 3.3 70B, Mixtral 8x7B, Gemma 2 |
+| OpenRouter | Cloud | 100+ models via single API |
+| Mistral | Cloud | Mistral Large, Medium, Small |
+| Together AI | Cloud | Llama 3.1 70B, Mixtral |
+| Fireworks AI | Cloud | Llama 3.1 70B |
+| DeepSeek | Cloud | DeepSeek Chat, Coder |
+| Qwen | Self-Hosted | Qwen3 30B A3B, 235B, 32B, 14B, 8B |
+| Custom | Self-Hosted | Any OpenAI-compatible endpoint |
+
 ---
 
 ## Tech Stack
@@ -50,41 +87,10 @@ Record, transcribe, summarize, and extract action items from your meetings using
 | Database | PostgreSQL 16 |
 | Cache / Queue | Redis 7, Celery |
 | Auth | JWT (python-jose), bcrypt |
-| AI Providers | OpenAI, Anthropic, Google Gemini, Mistral |
+| AI Providers | OpenAI, Anthropic, Gemini, Groq, OpenRouter, Mistral, Together, Fireworks, DeepSeek, Qwen, Custom |
 | Speech-to-Text | OpenAI Whisper |
 | Teams Integration | Microsoft Graph API |
 | Deployment | Docker, Docker Compose |
-
----
-
-## Project Structure
-
-```
-meeting-ai/
-├── docker-compose.yml          # Root compose (all services)
-├── frontend/                   # Next.js 14 App Router
-│   ├── src/
-│   │   ├── app/                # Pages (landing, auth, dashboard)
-│   │   ├── components/         # UI, layout, meeting, recording components
-│   │   ├── lib/                # Utils, types, constants, API client
-│   │   └── store/              # Zustand stores
-│   └── Dockerfile
-├── backend/                    # FastAPI application
-│   ├── app/
-│   │   ├── ai/                 # AI providers, agents, prompts
-│   │   ├── api/v1/             # REST API endpoints
-│   │   ├── audio/              # Audio processing & transcription
-│   │   ├── core/               # Security, exceptions
-│   │   ├── db/                 # Database session
-│   │   ├── models/             # SQLAlchemy models
-│   │   ├── schemas/            # Pydantic schemas
-│   │   ├── services/           # Business logic
-│   │   ├── tasks/              # Celery background tasks
-│   │   └── teams/              # Microsoft Teams bot
-│   ├── Dockerfile
-│   └── docker-compose.yml      # Backend-only compose
-└── README.md
-```
 
 ---
 
@@ -100,12 +106,18 @@ meeting-ai/
 ```bash
 git clone https://github.com/reddykarthikeya1/Meeting-Summary-Agent.git
 cd Meeting-Summary-Agent
-docker-compose up -d
+docker-compose up --build -d
 ```
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+- Setup Wizard: http://localhost:3000/setup
+
+### Default Credentials
+
+- Email: `admin@meetai.com`
+- Password: `Meetai@2026`
 
 ### Manual Setup
 
@@ -125,16 +137,6 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-**Database:**
-```bash
-# Create PostgreSQL database
-createdb meetai
-
-# Run migrations
-cd backend
-alembic upgrade head
-```
-
 ---
 
 ## Environment Variables
@@ -146,17 +148,53 @@ DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/meetai
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=your-secret-key
 
-# AI Providers (configure at least one)
+# Cloud AI Providers
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GEMINI_API_KEY=...
+GROQ_API_KEY=gsk_...
+OPENROUTER_API_KEY=sk-or-...
 MISTRAL_API_KEY=...
+TOGETHER_API_KEY=...
+FIREWORKS_API_KEY=...
+DEEPSEEK_API_KEY=...
+
+# Self-Hosted / Local
+QWEN_BASE_URL=http://localhost:11434/v1
+QWEN_MODEL=qwen3-30b-a3b
+
+# Custom OpenAI-Compatible
+CUSTOM_BASE_URL=
+CUSTOM_MODEL=
 
 # Microsoft Teams (optional)
 TEAMS_TENANT_ID=...
 TEAMS_CLIENT_ID=...
 TEAMS_CLIENT_SECRET=...
 ```
+
+---
+
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page with features and CTA |
+| `/login` | User login |
+| `/register` | User registration |
+| `/setup` | First-time setup wizard |
+| `/dashboard` | Dashboard with stats, recent meetings, charts |
+| `/dashboard/meetings` | Meeting list with filters and grid/list view |
+| `/dashboard/meetings/new` | Record or upload a new meeting |
+| `/dashboard/meetings/[id]` | Meeting detail with Summary, Transcript, Action Items, Notes, Comments |
+| `/dashboard/action-items` | Kanban board for all action items |
+| `/dashboard/search` | Full-text search across all meetings |
+| `/dashboard/templates` | Meeting template library |
+| `/dashboard/analytics` | Charts and statistics |
+| `/dashboard/settings` | Profile, AI Providers, Team, Integrations |
+| `/dashboard/live/[id]` | Real-time meeting recording view |
+| `/dashboard/playground` | AI playground with 4 modes |
+| `/dashboard/chat` | Multi-provider AI chat |
 
 ---
 
@@ -176,6 +214,14 @@ TEAMS_CLIENT_SECRET=...
 | GET | `/api/v1/action-items` | List all action items |
 | GET | `/api/v1/search?q=...` | Search across all meetings |
 | GET | `/api/v1/analytics/overview` | Dashboard analytics |
+| POST | `/api/v1/chat` | Multi-provider chat |
+| POST | `/api/v1/meetings/playground/summarize` | Playground summarization |
+| POST | `/api/v1/meetings/playground/extract-actions` | Playground action extraction |
+| POST | `/api/v1/meetings/playground/analyze-topics` | Playground topic analysis |
+| GET | `/api/v1/providers` | List AI providers |
+| POST | `/api/v1/providers/test` | Test provider connection |
+| POST | `/api/v1/providers/configure` | Save provider config |
+| POST | `/api/v1/setup/configure` | Initial setup |
 | POST | `/api/v1/teams/webhook` | Teams bot webhook |
 
 Full API documentation available at http://localhost:8000/docs (Swagger UI).
@@ -183,8 +229,6 @@ Full API documentation available at http://localhost:8000/docs (Swagger UI).
 ---
 
 ## Teams Bot Commands
-
-Add the MeetAI bot to any Teams channel and use these commands:
 
 | Command | Description |
 |---------|-------------|
@@ -195,26 +239,6 @@ Add the MeetAI bot to any Teams channel and use these commands:
 | `/link` | Get link to the meeting in MeetAI dashboard |
 | `/status` | Check current meeting sync status |
 | `/help` | Show available commands |
-
----
-
-## Pages
-
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page with features and CTA |
-| `/login` | User login |
-| `/register` | User registration |
-| `/` | Dashboard with stats, recent meetings, charts |
-| `/meetings` | Meeting list with filters and grid/list view |
-| `/meetings/new` | Record or upload a new meeting |
-| `/meetings/[id]` | Meeting detail with Summary, Transcript, Action Items, Notes, Comments tabs |
-| `/action-items` | Kanban board for all action items |
-| `/search` | Full-text search across all meetings |
-| `/templates` | Meeting template library |
-| `/analytics` | Charts and statistics |
-| `/settings` | Profile, AI Providers, Team, Integrations |
-| `/live/[id]` | Real-time meeting recording view |
 
 ---
 
