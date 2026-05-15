@@ -121,10 +121,10 @@ export default function SetupPage() {
   };
 
   const updateProviderKey = (id: string, field: string, value: string) => {
-    setProviderKeys((prev) => ({
-      ...prev,
-      [id]: { key: "", baseUrl: "", model: "", ...prev[id], [field]: value },
-    }));
+    setProviderKeys((prev) => {
+      const existing = prev[id] || { key: "", baseUrl: "", model: "" };
+      return { ...prev, [id]: { ...existing, [field]: value } };
+    });
   };
 
   return (
