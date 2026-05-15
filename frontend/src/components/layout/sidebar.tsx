@@ -14,6 +14,7 @@ import {
   BarChart3,
   Settings2,
   Wand2,
+  MessageSquare,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -38,6 +39,7 @@ const navItems = [
   { label: "Templates", href: "/dashboard/templates", icon: Layout },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { label: "Playground", href: "/dashboard/playground", icon: Wand2 },
+  { label: "Chat", href: "/dashboard/chat", icon: MessageSquare },
 ];
 
 const bottomItems = [

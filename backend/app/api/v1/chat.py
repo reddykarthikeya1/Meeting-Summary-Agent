@@ -1,0 +1,99 @@
+"""
+Chat endpoint for multi-provider LLM conversations.
+"""
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
+from app.dependencies import get_current_user
+from app.models.user import User
+from app.ai.factory import AIProviderFactory
+
+router = APIRouter(tags=["Chat"])
+
+
+class ChatMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    provider: str = "openai"
+    model: str | None = None
+    system_prompt: str | None = None
+    temperature: float = 0.7
+    max_tokens: int = 4096
+
+
+class ChatResponse(BaseModel):
+    response: str
+    provider: str
+    model: str
+    tokens_used: int | None = None
+
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat(
+    req: ChatRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Send a chat message to any configured AI provider.
+    Supports multi-turn conversations with full message history.
+    """
+    if not req.messages:
+        raise HTTPException(status_code=400, detail="Messages cannot be empty.")
+
+    try:
+        kwargs = {}
+        if req.model:
+            kwargs["model"] = req.model
+
+        provider = AIProviderFactory.create(req.provider, **kwargs)
+
+        # Build messages array for the provider
+        messages_text = ""
+        for msg in req.messages:
+            role_label = "User" if msg.role == "user" else "Assistant"
+            messages_text += f"{role_label}: {msg.content}\n\n"
+
+        # Get the last user message as the prompt
+        last_user_msg = req.messages[-1].content
+
+        # Use the provider to generate a response
+        response = await provider.generate_text(
+            prompt=last_user_msg,
+            system_prompt=req.system_prompt or "You are a helpful AI assistant.",
+            max_tokens=req.max_tokens,
+            temperature=req.temperature,
+        )
+
+        return ChatResponse(
+            response=response,
+            provider=req.provider,
+            model=req.model or "default",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/chat/providers")
+async def list_chat_providers(
+    current_user: User = Depends(get_current_user),
+):
+    """List all available chat providers with their models."""
+    providers = []
+    for name in AIProviderFactory.list_providers():
+        try:
+            provider = AIProviderFactory.create(name)
+            providers.append({
+                "id": name,
+                "name": provider.get_name(),
+                "models": provider.get_models(),
+            })
+        except Exception:
+            providers.append({
+                "id": name,
+                "name": name,
+                "models": [],
+            })
+    return {"providers": providers}

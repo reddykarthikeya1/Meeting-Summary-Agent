@@ -19,6 +19,7 @@ const breadcrumbMap: Record<string, string> = {
   "/dashboard/analytics": "Analytics",
   "/dashboard/settings": "Settings",
   "/dashboard/playground": "Playground",
+  "/dashboard/chat": "Chat",
 };
 
 function getBreadcrumbs(pathname: string) {
