@@ -3,15 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Send, Loader2, Copy, Check, Trash2, Settings2, ChevronDown,
-  Sparkles, RotateCcw, MessageSquare, Bot, User, Square,
+  Send, Loader2, Copy, Check, Trash2,
+  Sparkles, RotateCcw, MessageSquare, Bot, User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { API_URL, AI_PROVIDERS } from "@/lib/constants";
@@ -86,7 +85,8 @@ export default function ChatPage() {
   const deleteSession = (id: string) => {
     setSessions((prev) => prev.filter((s) => s.id !== id));
     if (activeSessionId === id) {
-      setActiveSessionId(sessions.length > 1 ? sessions.find((s) => s.id !== id)!.id : null);
+        const next = sessions.find((s) => s.id !== id);
+      setActiveSessionId(next?.id ?? null);
     }
   };
 

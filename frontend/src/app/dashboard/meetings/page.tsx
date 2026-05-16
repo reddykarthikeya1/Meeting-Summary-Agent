@@ -12,11 +12,11 @@ import {
   Clock,
   Filter,
   Video,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import {
   Select,
@@ -168,29 +168,19 @@ export default function MeetingsPage() {
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5" />
-                            {formatDuration(meeting.duration_sec)}
+                            {formatDuration(meeting.duration_sec ?? 0)}
                           </span>
                         </div>
 
                         {/* Participants */}
                         <div className="mt-4 flex items-center justify-between">
-                          <div className="flex -space-x-2">
-                            {meeting.participants.slice(0, 4).map((p) => (
-                              <Avatar key={p.id} className="h-7 w-7 border-2 border-background">
-                                <AvatarFallback className="text-[10px] bg-muted">
-                                  {getInitials(p.name)}
-                                </AvatarFallback>
-                              </Avatar>
-                            ))}
-                            {meeting.participants.length > 4 && (
-                              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium text-muted-foreground">
-                                +{meeting.participants.length - 4}
-                              </div>
-                            )}
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Users className="h-3.5 w-3.5" />
+                            <span>{meeting.participant_count} participants</span>
                           </div>
-                          {meeting.action_items_count > 0 && (
+                          {meeting.action_item_count > 0 && (
                             <Badge variant="outline" className="text-[10px]">
-                              {meeting.action_items_count} actions
+                              {meeting.action_item_count} actions
                             </Badge>
                           )}
                         </div>
@@ -237,21 +227,12 @@ export default function MeetingsPage() {
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            {formatDuration(meeting.duration_sec)}
+                            {formatDuration(meeting.duration_sec ?? 0)}
                           </span>
-                          <span>{meeting.participants.length} participants</span>
+                          <span>{meeting.participant_count} participants</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="flex -space-x-1.5">
-                          {meeting.participants.slice(0, 3).map((p) => (
-                            <Avatar key={p.id} className="h-6 w-6 border-2 border-background">
-                              <AvatarFallback className="text-[8px] bg-muted">
-                                {getInitials(p.name)}
-                              </AvatarFallback>
-                            </Avatar>
-                          ))}
-                        </div>
                         <Badge className={`text-[10px] ${STATUS_COLORS[meeting.status]}`}>
                           {meeting.status}
                         </Badge>

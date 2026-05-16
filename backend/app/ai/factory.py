@@ -54,7 +54,7 @@ class AIProviderFactory:
 
         # Resolve API key from settings if not provided
         env_var = _KEY_MAP.get(name, "")
-        resolved_key = api_key or getattr(settings, env_var, "") if env_var else (api_key or "")
+        resolved_key = (api_key or getattr(settings, env_var, "")) if env_var else (api_key or "")
 
         # Inject defaults for specific providers
         if name == "qwen":

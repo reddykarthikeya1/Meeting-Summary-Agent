@@ -4,7 +4,7 @@ Creates initial admin user and default data on first startup.
 """
 import uuid
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import async_session_factory
@@ -41,8 +41,8 @@ async def seed_database():
             role="admin",
             avatar_url=None,
             preferences={},
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
         )
         session.add(admin)
         await session.commit()

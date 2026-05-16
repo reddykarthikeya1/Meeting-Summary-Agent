@@ -1,15 +1,14 @@
 """Meeting management service."""
 import uuid
 import math
-from datetime import datetime
-from sqlalchemy import select, func, or_, and_
+from sqlalchemy import select, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.models.meeting import Meeting, MeetingParticipant, Speaker
-from app.models.transcript import TranscriptSegment
-from app.models.summary import Summary
-from app.models.action_item import ActionItem
 from app.models.tag import MeetingTag
+from app.models.action_item import ActionItem
+from app.models.summary import Summary
+from app.models.transcript import TranscriptSegment
 from app.schemas.meeting import MeetingCreate, MeetingUpdate, MeetingResponse, MeetingListResponse
 from app.core.exceptions import NotFoundError, ForbiddenError
 
@@ -61,7 +60,7 @@ class MeetingService:
         await self.db.flush()
         await self.db.refresh(meeting)
 
-        return self._to_response(meeting)
+        return await self._to_response(meeting)
 
     async def list_meetings(
         self,
@@ -104,7 +103,7 @@ class MeetingService:
         result = await self.db.execute(query)
         meetings = result.scalars().all()
 
-        items = [self._to_response(m) for m in meetings]
+        items = [await self._to_response(m) for m in meetings]
         total_pages = math.ceil(total / page_size) if total > 0 else 1
 
         return MeetingListResponse(
@@ -125,7 +124,7 @@ class MeetingService:
             raise NotFoundError("Meeting", str(meeting_id))
         if meeting.created_by != user_id:
             raise ForbiddenError("You do not have access to this meeting.")
-        return self._to_response(meeting)
+        return await self._to_response(meeting)
 
     async def update_meeting(
         self, meeting_id: uuid.UUID, data: MeetingUpdate, user_id: uuid.UUID
@@ -146,7 +145,7 @@ class MeetingService:
 
         await self.db.flush()
         await self.db.refresh(meeting)
-        return self._to_response(meeting)
+        return await self._to_response(meeting)
 
     async def delete_meeting(self, meeting_id: uuid.UUID, user_id: uuid.UUID) -> None:
         """Soft delete a meeting by archiving it."""
@@ -185,8 +184,29 @@ class MeetingService:
         await self.db.refresh(participant)
         return participant
 
-    def _to_response(self, meeting: Meeting) -> MeetingResponse:
+    async def _to_response(self, meeting: Meeting) -> MeetingResponse:
         """Convert a Meeting model to a MeetingResponse schema."""
+        # Query actual counts
+        participant_count_result = await self.db.execute(
+            select(func.count()).where(MeetingParticipant.meeting_id == meeting.id)
+        )
+        participant_count = participant_count_result.scalar() or 0
+
+        action_count_result = await self.db.execute(
+            select(func.count()).where(ActionItem.meeting_id == meeting.id)
+        )
+        action_item_count = action_count_result.scalar() or 0
+
+        has_transcript_result = await self.db.execute(
+            select(func.count()).where(TranscriptSegment.meeting_id == meeting.id)
+        )
+        has_transcript = (has_transcript_result.scalar() or 0) > 0
+
+        has_summary_result = await self.db.execute(
+            select(func.count()).where(Summary.meeting_id == meeting.id)
+        )
+        has_summary = (has_summary_result.scalar() or 0) > 0
+
         return MeetingResponse(
             id=meeting.id,
             title=meeting.title,
@@ -203,8 +223,8 @@ class MeetingService:
             is_archived=meeting.is_archived,
             created_at=meeting.created_at,
             updated_at=meeting.updated_at,
-            participant_count=0,
-            action_item_count=0,
-            has_transcript=bool(meeting.audio_file_url),
-            has_summary=False,
+            participant_count=participant_count,
+            action_item_count=action_item_count,
+            has_transcript=has_transcript,
+            has_summary=has_summary,
         )

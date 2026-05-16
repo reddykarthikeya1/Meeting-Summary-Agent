@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Text, DateTime, Integer, Boolean, Float, ForeignKey, func
+from sqlalchemy import String, Text, DateTime, Integer, Boolean, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -13,7 +13,7 @@ class Meeting(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     meeting_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     duration_sec: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    status: Mapped[str] = mapped_column(String(50), default="pending", nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="scheduled", nullable=False)
     meeting_type: Mapped[str] = mapped_column(String(50), default="general", nullable=False)
     created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     team_id: Mapped[str | None] = mapped_column(String(255), nullable=True)

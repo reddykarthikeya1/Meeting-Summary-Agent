@@ -4,7 +4,7 @@ Handles authentication and API calls to Microsoft Graph.
 """
 import httpx
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.config import settings
 from app.teams.models import TeamsMeeting, TeamsChannelMessage
 
@@ -23,7 +23,7 @@ class GraphAPIConnector:
 
     async def _get_access_token(self) -> str:
         """Get OAuth2 access token for Graph API."""
-        if self._access_token and self._token_expires and datetime.utcnow() < self._token_expires:
+        if self._access_token and self._token_expires and datetime.now(timezone.utc) < self._token_expires:
             return self._access_token
 
         async with httpx.AsyncClient() as client:
@@ -39,7 +39,7 @@ class GraphAPIConnector:
             response.raise_for_status()
             data = response.json()
             self._access_token = data["access_token"]
-            self._token_expires = datetime.utcnow() + timedelta(seconds=data["expires_in"] - 300)
+            self._token_expires = datetime.now(timezone.utc) + timedelta(seconds=data["expires_in"] - 300)
             return self._access_token
 
     async def _request(self, method: str, path: str, **kwargs) -> dict:

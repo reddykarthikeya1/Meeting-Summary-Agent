@@ -1,7 +1,7 @@
 """Summarizer agent for generating meeting summaries with chunking support."""
 from app.ai.base import AIProvider
 from app.ai.prompts.summarizer import SUMMARY_PROMPTS
-from app.ai.chunker import chunk_text, estimate_tokens, merge_chunk_results
+from app.ai.chunker import chunk_text, estimate_tokens
 
 
 # Max tokens we send to the model (leaving room for system prompt + output)

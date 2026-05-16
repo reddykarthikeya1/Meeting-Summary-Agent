@@ -1,7 +1,7 @@
 """Search service for full-text search across meetings."""
 import uuid
 from datetime import datetime
-from sqlalchemy import select, func, or_, and_
+from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.meeting import Meeting
 from app.models.transcript import TranscriptSegment
@@ -90,7 +90,7 @@ class SearchService:
         )
         transcript_result = await self.db.execute(transcript_query)
         seen_meetings = {r.meeting_id for r in results}
-        for seg, meeting in transcript_result.scalars().all():
+        for seg, meeting in transcript_result.all():
             mid = str(meeting.id)
             if mid not in seen_meetings:
                 seen_meetings.add(mid)
@@ -120,7 +120,7 @@ class SearchService:
             .limit(50)
         )
         summary_result = await self.db.execute(summary_query)
-        for summary, meeting in summary_result.scalars().all():
+        for summary, meeting in summary_result.all():
             mid = str(meeting.id)
             if mid not in seen_meetings:
                 seen_meetings.add(mid)
@@ -149,7 +149,7 @@ class SearchService:
             .limit(50)
         )
         action_result = await self.db.execute(action_query)
-        for item, meeting in action_result.scalars().all():
+        for item, meeting in action_result.all():
             mid = str(meeting.id)
             if mid not in seen_meetings:
                 seen_meetings.add(mid)

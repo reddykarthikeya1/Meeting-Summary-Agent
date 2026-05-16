@@ -3,7 +3,6 @@ Setup wizard endpoints.
 Allows first-time configuration of database, AI providers, and admin account.
 """
 import json
-import os
 from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel

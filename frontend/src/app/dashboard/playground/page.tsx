@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { API_URL, AI_PROVIDERS } from "@/lib/constants";
 import { AnimatedPage } from "@/components/shared/animated-page";
+import { formatTime } from "@/lib/utils";
 
 const SAMPLE_TRANSCRIPT = `[00:00] Sarah: Good morning everyone. Let's start with the Q2 roadmap update.
 [00:15] Mike: Sure. We've completed the authentication module and the API is live.
@@ -154,8 +155,6 @@ export default function PlaygroundPage() {
     setCopied(true); toast.success("Copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 
   return (
     <AnimatedPage>

@@ -41,13 +41,6 @@ import {
 import { formatDate, formatDuration, formatTime, getInitials } from "@/lib/utils";
 import { STATUS_COLORS, MEETING_TYPES, PRIORITY_COLORS } from "@/lib/constants";
 
-const priorityIcons: Record<string, string> = {
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  urgent: "Urgent",
-};
-
 export default function MeetingDetailPage() {
   const params = useParams();
   const meetingId = params.meetingId as string;
@@ -58,6 +51,9 @@ export default function MeetingDetailPage() {
   const [notes, setNotes] = useState("");
   const [commentText, setCommentText] = useState("");
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const [waveformHeights] = useState(() =>
+    Array.from({ length: 60 }, () => Math.random() * 100)
+  );
 
   const segments = transcriptSegments[meetingId] || [];
   const meetingSummaries = summaries.filter((s) => s.meeting_id === meetingId);
@@ -66,11 +62,12 @@ export default function MeetingDetailPage() {
 
   useEffect(() => {
     if (!isPlaying || !meeting) return;
+    const duration = meeting.duration_sec ?? 0;
     const interval = setInterval(() => {
       setCurrentTime((t) => {
-        if (t >= meeting.duration_sec) {
+        if (t >= duration) {
           setIsPlaying(false);
-          return meeting.duration_sec;
+          return duration;
         }
         return t + 1;
       });
@@ -135,34 +132,12 @@ export default function MeetingDetailPage() {
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" />
-                {formatDuration(meeting.duration_sec)}
+                {formatDuration(meeting.duration_sec ?? 0)}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="h-4 w-4" />
-                {meeting.participants.length} participants
+                {meeting.participant_count} participants
               </span>
-            </div>
-
-            {/* Participants */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {meeting.participants.map((p) => (
-                <div
-                  key={p.id}
-                  className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5"
-                >
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-[10px] bg-muted">
-                      {getInitials(p.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs font-medium">{p.name}</span>
-                  {p.role === "organizer" && (
-                    <Badge variant="outline" className="text-[9px] px-1 py-0">
-                      Host
-                    </Badge>
-                  )}
-                </div>
-              ))}
             </div>
           </div>
         </div>
@@ -273,9 +248,8 @@ export default function MeetingDetailPage() {
                 </Button>
                 <div className="flex-1">
                   <div className="flex h-8 items-center gap-[2px]">
-                    {Array.from({ length: 60 }).map((_, i) => {
-                      const height = Math.random() * 100;
-                      const active = (i / 60) * meeting.duration_sec <= currentTime;
+                    {waveformHeights.map((height, i) => {
+                      const active = (i / 60) * (meeting.duration_sec ?? 0) <= currentTime;
                       return (
                         <div
                           key={i}
@@ -289,7 +263,7 @@ export default function MeetingDetailPage() {
                   </div>
                   <div className="mt-1 flex justify-between text-xs text-muted-foreground">
                     <span>{formatTime(currentTime)}</span>
-                    <span>{formatTime(meeting.duration_sec)}</span>
+                    <span>{formatTime(meeting.duration_sec ?? 0)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -466,18 +440,18 @@ export default function MeetingDetailPage() {
                     <div className="flex gap-3">
                       <Avatar className="h-8 w-8 shrink-0">
                         <AvatarFallback className="text-xs bg-muted">
-                          {getInitials(comment.user.name)}
+                          {getInitials(comment.user_name || "?")}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold">{comment.user.name}</span>
+                          <span className="text-sm font-semibold">{comment.user_name}</span>
                           <span className="text-xs text-muted-foreground">
                             {formatDate(comment.created_at)}
                           </span>
                           {comment.time_reference !== undefined && (
                             <Badge variant="outline" className="text-[10px]">
-                              {formatTime(comment.time_reference)}
+                              {comment.time_reference}
                             </Badge>
                           )}
                         </div>
@@ -490,12 +464,12 @@ export default function MeetingDetailPage() {
                               <div key={reply.id} className="flex gap-2">
                                 <Avatar className="h-6 w-6 shrink-0">
                                   <AvatarFallback className="text-[8px] bg-muted">
-                                    {getInitials(reply.user.name)}
+                                    {getInitials(reply.user_name || "?")}
                                   </AvatarFallback>
                                 </Avatar>
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold">{reply.user.name}</span>
+                                    <span className="text-xs font-semibold">{reply.user_name}</span>
                                     <span className="text-[10px] text-muted-foreground">
                                       {formatDate(reply.created_at)}
                                     </span>

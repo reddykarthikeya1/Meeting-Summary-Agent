@@ -2,7 +2,7 @@
 import uuid
 import math
 from datetime import datetime, timezone
-from sqlalchemy import select, func, and_
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.meeting import Meeting, MeetingParticipant
 from app.models.transcript import TranscriptSegment

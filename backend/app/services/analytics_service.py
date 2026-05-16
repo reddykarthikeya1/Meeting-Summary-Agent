@@ -1,7 +1,7 @@
 """Analytics service for meeting statistics."""
 import uuid
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import select, func, and_, case
+from sqlalchemy import select, func, Date, cast
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.meeting import Meeting, Speaker
 from app.models.action_item import ActionItem
@@ -177,7 +177,7 @@ class AnalyticsService:
 
         result = await self.db.execute(
             select(
-                func.date(Meeting.meeting_date).label("date"),
+                cast(Meeting.meeting_date, Date).label("date"),
                 func.count(Meeting.id).label("count"),
             )
             .where(
@@ -185,8 +185,8 @@ class AnalyticsService:
                 Meeting.is_archived == False,
                 Meeting.meeting_date >= start_date,
             )
-            .group_by(func.date(Meeting.meeting_date))
-            .order_by(func.date(Meeting.meeting_date))
+            .group_by(cast(Meeting.meeting_date, Date))
+            .order_by(cast(Meeting.meeting_date, Date))
         )
 
         return [{"date": str(row[0]), "count": row[1]} for row in result.all()]

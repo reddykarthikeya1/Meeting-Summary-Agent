@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
   User, Cpu, Users, Puzzle, Save, Plus, Trash2, Check, Globe,
   MessageCircle, GitBranch, Eye, EyeOff, Loader2, TestTube2,
-  ExternalLink, Wifi, WifiOff, ChevronDown,
+  ExternalLink, Wifi, WifiOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

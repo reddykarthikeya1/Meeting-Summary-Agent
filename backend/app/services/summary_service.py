@@ -3,6 +3,7 @@ import uuid
 import structlog
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from app.models.meeting import Meeting
 from app.models.transcript import TranscriptSegment
 from app.models.summary import Summary
@@ -137,7 +138,9 @@ class SummaryService:
     async def _get_meeting(self, meeting_id: uuid.UUID, user_id: uuid.UUID) -> Meeting:
         """Fetch and validate meeting ownership."""
         result = await self.db.execute(
-            select(Meeting).where(Meeting.id == meeting_id)
+            select(Meeting)
+            .options(selectinload(Meeting.creator))
+            .where(Meeting.id == meeting_id)
         )
         meeting = result.scalar_one_or_none()
         if not meeting:

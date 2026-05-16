@@ -12,16 +12,19 @@ export interface Meeting {
   title: string;
   description?: string;
   meeting_date: string;
-  duration_sec: number;
+  duration_sec: number | null;
   status: "scheduled" | "recording" | "processing" | "completed" | "failed";
   meeting_type: string;
   created_by: string;
+  team_id?: string;
   audio_file_url?: string;
   ai_provider?: string;
-  participants: Participant[];
-  action_items_count: number;
-  comments_count: number;
-  tags: Tag[];
+  metadata?: Record<string, unknown> | null;
+  is_archived: boolean;
+  participant_count: number;
+  action_item_count: number;
+  has_transcript: boolean;
+  has_summary: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -74,12 +77,14 @@ export interface ActionItem {
 export interface Comment {
   id: string;
   meeting_id: string;
-  user: User;
+  user_id: string;
+  user_name?: string;
   parent_id?: string;
   content: string;
-  time_reference?: number;
+  time_reference?: string;
   replies?: Comment[];
   created_at: string;
+  updated_at: string;
 }
 
 export interface Template {
@@ -88,7 +93,7 @@ export interface Template {
   description: string;
   category: string;
   icon: string;
-  structure: Record<string, unknown>;
+  structure: { sections: string[]; duration_target?: number; [key: string]: unknown };
   is_default: boolean;
   is_system: boolean;
   usage_count: number;

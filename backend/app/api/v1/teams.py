@@ -1,14 +1,30 @@
 """
 Teams webhook and integration API endpoints.
 """
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Request, HTTPException, Depends
-from typing import Optional
-from datetime import datetime, timedelta
+from pydantic import BaseModel
 from app.config import settings
 from app.teams.connector import GraphAPIConnector
 from app.teams.bot import TeamsBotHandler
 
 router = APIRouter(tags=["teams"])
+
+
+class TeamsConnectRequest(BaseModel):
+    tenant_id: str
+    client_id: str
+    client_secret: str
+
+
+class TeamsSyncRequest(BaseModel):
+    user_id: str
+    meeting_id: str
+
+
+class TeamsMessageRequest(BaseModel):
+    chat_id: str
+    content: str
 
 # Initialize connector (in production, use env vars)
 graph_connector = None
@@ -78,11 +94,7 @@ async def webhook_validation(request: Request):
 
 
 @router.post("/connect")
-async def connect_teams_account(
-    tenant_id: str,
-    client_id: str,
-    client_secret: str,
-):
+async def connect_teams_account(body: TeamsConnectRequest):
     """
     Connect a Microsoft Teams account by providing Azure AD credentials.
     Stores the credentials and initializes the Graph API connector.
@@ -90,7 +102,7 @@ async def connect_teams_account(
     global graph_connector, bot_handler
 
     # Validate credentials by trying to get an access token
-    connector = GraphAPIConnector(tenant_id, client_id, client_secret)
+    connector = GraphAPIConnector(body.tenant_id, body.client_id, body.client_secret)
     try:
         await connector._get_access_token()
     except Exception as e:
@@ -101,7 +113,7 @@ async def connect_teams_account(
 
     return {
         "status": "connected",
-        "tenant_id": tenant_id,
+        "tenant_id": body.tenant_id,
         "message": "Teams account connected successfully. Bot is ready to receive events.",
     }
 
@@ -119,8 +131,9 @@ async def list_teams_meetings(
     if not connector:
         raise HTTPException(status_code=400, detail="Teams account not connected. Call /teams/connect first.")
 
-    start = datetime.utcnow() - timedelta(days=days)
-    end = datetime.utcnow()
+    now = datetime.now(timezone.utc)
+    start = now - timedelta(days=days)
+    end = now
 
     try:
         meetings = await connector.get_user_meetings(user_id, start, end)
@@ -146,10 +159,7 @@ async def get_teams_meeting_transcript(user_id: str, meeting_id: str):
 
 
 @router.post("/sync")
-async def sync_teams_meeting(
-    user_id: str,
-    meeting_id: str,
-):
+async def sync_teams_meeting(body: TeamsSyncRequest):
     """
     Sync a Teams meeting to MeetAI.
     Fetches transcript, recording, and metadata from Teams and creates a meeting in MeetAI.
@@ -160,17 +170,17 @@ async def sync_teams_meeting(
 
     try:
         # Get meeting details
-        meeting_data = await connector.get_online_meeting(user_id, meeting_id)
+        meeting_data = await connector.get_online_meeting(body.user_id, body.meeting_id)
 
         # Get transcript
-        transcript = await connector.get_meeting_transcript(user_id, meeting_id)
+        transcript = await connector.get_meeting_transcript(body.user_id, body.meeting_id)
 
         # Get recording URL
-        recording_url = await connector.get_meeting_recording(user_id, meeting_id)
+        recording_url = await connector.get_meeting_recording(body.user_id, body.meeting_id)
 
         return {
             "status": "synced",
-            "meeting_id": meeting_id,
+            "meeting_id": body.meeting_id,
             "subject": meeting_data.get("subject", "Untitled"),
             "has_transcript": bool(transcript),
             "has_recording": bool(recording_url),
@@ -181,17 +191,14 @@ async def sync_teams_meeting(
 
 
 @router.post("/send-message")
-async def send_teams_message(
-    chat_id: str,
-    content: str,
-):
+async def send_teams_message(body: TeamsMessageRequest):
     """Send a message to a Teams chat or channel."""
     connector = get_graph_connector()
     if not connector:
         raise HTTPException(status_code=400, detail="Teams account not connected.")
 
     try:
-        result = await connector.send_chat_message(chat_id, content)
+        result = await connector.send_chat_message(body.chat_id, body.content)
         return {"status": "sent", "message_id": result.get("id")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to send message: {str(e)}")

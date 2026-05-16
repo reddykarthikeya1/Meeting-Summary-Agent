@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   Search as SearchIcon,
@@ -53,7 +53,7 @@ function getAllResults(): SearchResult[] {
       snippet: m.description || "",
       meetingId: m.id,
       date: m.meeting_date,
-      metadata: `${formatDuration(m.duration_sec)} | ${m.participants.length} participants`,
+      metadata: `${formatDuration(m.duration_sec ?? 0)} | ${m.participant_count} participants`,
     });
   });
 

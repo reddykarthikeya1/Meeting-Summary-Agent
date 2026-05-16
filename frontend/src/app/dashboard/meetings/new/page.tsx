@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -58,6 +58,7 @@ export default function NewMeetingPage() {
   const [waveformHeights] = useState(() =>
     Array.from({ length: 40 }, () => Math.random() * 100)
   );
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -75,18 +76,17 @@ export default function NewMeetingPage() {
   const startRecording = () => {
     setIsRecording(true);
     setIsPaused(false);
-    const interval = setInterval(() => {
+    recordingIntervalRef.current = setInterval(() => {
       setDuration((d) => d + 1);
     }, 1000);
-    // Store interval for cleanup (simplified)
-    (window as any).__recordingInterval = interval;
   };
 
   const stopRecording = () => {
     setIsRecording(false);
     setIsPaused(false);
-    if ((window as any).__recordingInterval) {
-      clearInterval((window as any).__recordingInterval);
+    if (recordingIntervalRef.current) {
+      clearInterval(recordingIntervalRef.current);
+      recordingIntervalRef.current = null;
     }
   };
 

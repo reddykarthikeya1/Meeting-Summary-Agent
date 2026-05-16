@@ -1,9 +1,7 @@
 """Teams bot handler for meeting notes and commands."""
 import structlog
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, timezone
 from app.teams.connector import GraphAPIConnector
-from app.teams.models import TeamsBotCommand
 
 logger = structlog.get_logger()
 
@@ -90,7 +88,7 @@ class TeamsBotHandler:
         if "Started" in event_type:
             logger.info("Meeting started", meeting_id=meeting_id)
             self._meeting_sessions[meeting_id] = {
-                "started_at": datetime.utcnow().isoformat(),
+                "started_at": datetime.now(timezone.utc).isoformat(),
                 "chat_id": chat_id,
                 "notes": [],
             }

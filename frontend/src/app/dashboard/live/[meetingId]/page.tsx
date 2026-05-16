@@ -9,13 +9,9 @@ import {
   Pause,
   Play,
   StopCircle,
-  MessageSquare,
-  StickyNote,
-  Users,
   Clock,
   Maximize2,
   Minimize2,
-  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

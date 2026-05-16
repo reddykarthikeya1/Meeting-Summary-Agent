@@ -87,6 +87,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
 
 volumes:
   postgres_data:

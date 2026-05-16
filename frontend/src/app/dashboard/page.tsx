@@ -198,7 +198,7 @@ export default function DashboardPage() {
                               {formatDate(meeting.meeting_date)}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {formatDuration(meeting.duration_sec)}
+                              {formatDuration(meeting.duration_sec ?? 0)}
                             </span>
                           </div>
                           <div className="mt-1.5 flex items-center gap-2">
@@ -207,19 +207,9 @@ export default function DashboardPage() {
                                 {type.label}
                               </Badge>
                             )}
-                            <div className="flex -space-x-1.5">
-                              {meeting.participants.slice(0, 3).map((p) => (
-                                <Avatar key={p.id} className="h-5 w-5 border-2 border-background">
-                                  <AvatarFallback className="text-[8px] bg-muted">
-                                    {getInitials(p.name)}
-                                  </AvatarFallback>
-                                </Avatar>
-                              ))}
-                              {meeting.participants.length > 3 && (
-                                <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-muted text-[8px] text-muted-foreground">
-                                  +{meeting.participants.length - 3}
-                                </div>
-                              )}
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                              <Users className="h-3 w-3" />
+                              <span>{meeting.participant_count}</span>
                             </div>
                           </div>
                         </div>

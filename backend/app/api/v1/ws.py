@@ -1,7 +1,5 @@
-import uuid
 import json
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
-from app.dependencies import get_current_user
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.core.security import decode_token
 
 router = APIRouter()
@@ -64,7 +62,11 @@ async def websocket_meeting(websocket: WebSocket, meeting_id: str):
     try:
         while True:
             data = await websocket.receive_text()
-            message = json.loads(data)
+            try:
+                message = json.loads(data)
+            except json.JSONDecodeError:
+                await websocket.send_json({"type": "error", "message": "Invalid JSON"})
+                continue
 
             msg_type = message.get("type")
 

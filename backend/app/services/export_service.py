@@ -3,7 +3,6 @@ import uuid
 import io
 import json
 import structlog
-from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.meeting import Meeting, MeetingParticipant
